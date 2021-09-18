@@ -1,6 +1,4 @@
-
-
-# Coalesced Multi-Output Tsetlin Machine
+# Coalesced Multi-Output Tsetlin Machine with Batching
 ![License](https://img.shields.io/github/license/microsoft/interpret.svg?style=flat-square) ![Python Version](https://img.shields.io/pypi/pyversions/interpret.svg?style=flat-square)![Maintenance](https://img.shields.io/maintenance/yes/2021?style=flat-square)
 
 Implementation of the Coalesced Multi-Output Tsetlin Machine (https://arxiv.org/abs/2108.07594).
