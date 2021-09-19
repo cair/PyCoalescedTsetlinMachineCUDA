@@ -197,7 +197,7 @@ class CommonTsetlinMachine():
 
 			self.allocate_gpu_memory(number_of_examples)
 
-			self.prepare(g.state, self.ta_state_gpu, self.clause_weights_gpu self.batch_size, grid=self.grid, block=self.block)
+			self.prepare(g.state, self.ta_state_gpu, self.clause_weights_gpu, grid=self.grid, block=self.block)
 			cuda.Context.synchronize()
 
 			mod_update = SourceModule(parameters + kernels.code_header + kernels.code_update, no_extern_c=True)
