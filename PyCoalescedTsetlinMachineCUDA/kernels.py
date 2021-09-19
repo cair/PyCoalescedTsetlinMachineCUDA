@@ -118,18 +118,22 @@ code_update = """
 			}
 		}
 
-		__device__ inline void update_clause(curandState *localState, int *clause_weight, unsigned int *ta_state, int clause_output, int clause_patch, int *X, int y, int class_sum)
+		__device__ inline int update_clause(curandState *localState, int *clause_weight, unsigned int *ta_state, int clause_output, int clause_patch, int *X, int y, int class_sum)
 		{
+			int updated = 0;
+
 			int target = 1 - 2*(class_sum > y);
 			
 			if (target == -1 && curand_uniform(localState) > 1.0*Q/max(1, CLASSES-1)) {
-				return;
+				return updated;
 			}
 
 			int sign = (*clause_weight >= 0) - (*clause_weight < 0);
 		
 			int absolute_prediction_error = abs(y - class_sum);
 			if (curand_uniform(localState) <= 1.0*absolute_prediction_error/(2*THRESHOLD)) {
+				updated = 1;
+
 				if (target*sign > 0) {
 					if (clause_output && abs(*clause_weight) < INT_MAX) {
 						(*clause_weight) += sign;
@@ -172,6 +176,8 @@ code_update = """
 					}
 				}
 			}
+
+			return updated;
 		}
 
 		// Evaluate example
@@ -238,7 +244,10 @@ code_update = """
 						} else if (local_class_sum < -THRESHOLD) {
 							local_class_sum = -THRESHOLD;
 						}
-						update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[(example+e)*CLASSES + class_id], local_class_sum);
+						
+						if (update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[(example+e)*CLASSES + class_id], local_class_sum)) {
+							break;
+						}
 					}
 				}
 			}
