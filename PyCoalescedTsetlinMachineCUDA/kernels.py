@@ -175,7 +175,7 @@ code_update = """
 		}
 
 		// Evaluate example
-		__global__ void evaluate(unsigned int *global_ta_state, int *clause_weights, int *class_sum, int *X, int example)
+		__global__ void evaluate(unsigned int *global_ta_state, int *clause_weights, int *class_sum, int *X, int example, int batch_size)
 		{
 			int index = blockIdx.x * blockDim.x + threadIdx.x;
 			int stride = blockDim.x * gridDim.x;
@@ -183,36 +183,38 @@ code_update = """
 			for (int clause = index; clause < CLAUSES; clause += stride) {
 				unsigned int *ta_state = &global_ta_state[clause*LA_CHUNKS*STATE_BITS];
 
-				int clause_output;
-				for (int patch = 0; patch < PATCHES; ++patch) {
-					clause_output = 1;
-					for (int la_chunk = 0; la_chunk < LA_CHUNKS-1; ++la_chunk) {
-						if ((ta_state[la_chunk*STATE_BITS + STATE_BITS - 1] & X[example*(LA_CHUNKS*PATCHES) + patch*LA_CHUNKS + la_chunk]) != ta_state[la_chunk*STATE_BITS + STATE_BITS - 1]) {
+				for (int e = 0; e < batch_size; ++e) {
+					int clause_output;
+					for (int patch = 0; patch < PATCHES; ++patch) {
+						clause_output = 1;
+						for (int la_chunk = 0; la_chunk < LA_CHUNKS-1; ++la_chunk) {
+							if ((ta_state[la_chunk*STATE_BITS + STATE_BITS - 1] & X[(example+e)*(LA_CHUNKS*PATCHES) + patch*LA_CHUNKS + la_chunk]) != ta_state[la_chunk*STATE_BITS + STATE_BITS - 1]) {
+								clause_output = 0;
+								break;
+							}
+						}
+
+						if ((ta_state[(LA_CHUNKS-1)*STATE_BITS + STATE_BITS - 1] & X[(example+e)*(LA_CHUNKS*PATCHES) + patch*LA_CHUNKS + LA_CHUNKS-1] & FILTER) != (ta_state[(LA_CHUNKS-1)*STATE_BITS + STATE_BITS - 1] & FILTER)) {
 							clause_output = 0;
+						}
+
+						if (clause_output) {
 							break;
 						}
 					}
 
-					if ((ta_state[(LA_CHUNKS-1)*STATE_BITS + STATE_BITS - 1] & X[example*(LA_CHUNKS*PATCHES) + patch*LA_CHUNKS + LA_CHUNKS-1] & FILTER) != (ta_state[(LA_CHUNKS-1)*STATE_BITS + STATE_BITS - 1] & FILTER)) {
-						clause_output = 0;
-					}
-
 					if (clause_output) {
-						break;
-					}
-				}
-
-				if (clause_output) {
-					for (int class_id = 0; class_id < CLASSES; ++class_id) {
-						int clause_weight = clause_weights[class_id*CLAUSES + clause];
-						atomicAdd(&class_sum[class_id], clause_weight);					
+						for (int class_id = 0; class_id < CLASSES; ++class_id) {
+							int clause_weight = clause_weights[class_id*CLAUSES + clause];
+							atomicAdd(&class_sum[CLASSES*e + class_id], clause_weight);					
+						}
 					}
 				}
 			}
 		}
 
 		// Update state of Tsetlin Automata team
-		__global__ void update(curandState *state, unsigned int *global_ta_state, int *clause_weights, int *class_sum, int *X, int *y, int example)
+		__global__ void update(curandState *state, unsigned int *global_ta_state, int *clause_weights, int *class_sum, int *X, int *y, int example, int batch_size)
 		{
 			int index = blockIdx.x * blockDim.x + threadIdx.x;
 			int stride = blockDim.x * gridDim.x;
@@ -224,18 +226,20 @@ code_update = """
 			for (unsigned long long clause = index; clause < CLAUSES; clause += stride) {
 				unsigned int *ta_state = &global_ta_state[clause*LA_CHUNKS*STATE_BITS];
 
-				unsigned int clause_output;
-				int clause_patch;
-				calculate_clause_output(&localState, ta_state, &clause_output, &clause_patch, &X[example*(LA_CHUNKS*PATCHES)]);
+				for (int e = 0; e < batch_size; ++e) {
+					unsigned int clause_output;
+					int clause_patch;
+					calculate_clause_output(&localState, ta_state, &clause_output, &clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)]);
 
-				for (unsigned long long class_id = 0; class_id < CLASSES; ++class_id) {
-					int local_class_sum = class_sum[class_id];
-					if (local_class_sum > THRESHOLD) {
-						local_class_sum = THRESHOLD;
-					} else if (local_class_sum < -THRESHOLD) {
-						local_class_sum = -THRESHOLD;
+					for (unsigned long long class_id = 0; class_id < CLASSES; ++class_id) {
+						int local_class_sum = class_sum[CLASSES*e + class_id];
+						if (local_class_sum > THRESHOLD) {
+							local_class_sum = THRESHOLD;
+						} else if (local_class_sum < -THRESHOLD) {
+							local_class_sum = -THRESHOLD;
+						}
+						update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[example*CLASSES + class_id], local_class_sum);
 					}
-					update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[example*(LA_CHUNKS*PATCHES)], y[example*CLASSES + class_id], local_class_sum);
 				}
 			}
 		
@@ -307,7 +311,7 @@ code_evaluate = """
 code_prepare = """
 	extern "C"
     {
-		__global__ void prepare(curandState *state, unsigned int *global_ta_state, int *clause_weights, int *class_sum)
+		__global__ void prepare(curandState *state, unsigned int *global_ta_state, int *clause_weights)
 		{
 			int index = blockIdx.x * blockDim.x + threadIdx.x;
 			int stride = blockDim.x * gridDim.x;
