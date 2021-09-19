@@ -237,6 +237,7 @@ code_update = """
 					int clause_patch;
 					calculate_clause_output(&localState, ta_state, &clause_output, &clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)]);
 
+					int updated = 0;
 					for (unsigned long long class_id = 0; class_id < CLASSES; ++class_id) {
 						int local_class_sum = class_sum[CLASSES*e + class_id];
 						if (local_class_sum > THRESHOLD) {
@@ -244,10 +245,11 @@ code_update = """
 						} else if (local_class_sum < -THRESHOLD) {
 							local_class_sum = -THRESHOLD;
 						}
-						
-						if (update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[(example+e)*CLASSES + class_id], local_class_sum)) {
-							break;
-						}
+						updated = updated || update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[(example+e)*CLASSES + class_id], local_class_sum);
+					}
+
+					if (updated) {
+						break;
 					}
 				}
 			}
