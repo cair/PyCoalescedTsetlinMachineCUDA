@@ -238,7 +238,7 @@ code_update = """
 						} else if (local_class_sum < -THRESHOLD) {
 							local_class_sum = -THRESHOLD;
 						}
-						update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[example*CLASSES + class_id], local_class_sum);
+						update_clause(&localState, &clause_weights[class_id*CLAUSES + clause], ta_state, clause_output, clause_patch, &X[(example+e)*(LA_CHUNKS*PATCHES)], y[(example+e)*CLASSES + class_id], local_class_sum);
 					}
 				}
 			}
