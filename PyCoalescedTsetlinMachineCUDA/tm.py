@@ -47,7 +47,7 @@ class CommonTsetlinMachine():
 		self.grid = grid
 		self.block = block
 
-		self.batch_size = 100
+		self.batch_size = 1
 
 		self.X_train = np.array([])
 		self.Y_train = np.array([])
