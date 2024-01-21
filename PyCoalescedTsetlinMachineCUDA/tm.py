@@ -450,7 +450,7 @@ class MultiOutputRegressionTsetlinMachine(CommonTsetlinMachine):
         self.max_y = np.max(Y, axis=1)
         self.min_y = np.min(Y, axis=1)
 
-        encoded_Y = ((Y.transpose() - self.min_y))/(self.max_y - self.min_y)*T
+        encoded_Y = ((Y.transpose() - self.min_y))/(self.max_y - self.min_y)*self.T
         encoded_Y = encoded_Y.transpose().astype(np.int32)
 
         self._fit(X, encoded_Y, epochs = epochs, incremental = incremental)
