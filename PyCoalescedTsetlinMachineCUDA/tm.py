@@ -436,3 +436,30 @@ class RegressionTsetlinMachine(CommonTsetlinMachine):
 		X = X.reshape(X.shape[0], X.shape[1], 1)
 		
 		return 1.0*(self._score(X)[0,:])*(self.max_y - self.min_y)/(self.T) + self.min_y
+
+class MultiOutputRegressionTsetlinMachine(CommonTsetlinMachine):
+    def __init__(self, number_of_clauses, T, s, boost_true_positive_feedback=1, number_of_state_bits=8, append_negated=True, grid=(16*13,1,1), block=(128,1,1)):
+        super().__init__(number_of_clauses, T, s, boost_true_positive_feedback=boost_true_positive_feedback, number_of_state_bits=number_of_state_bits, append_negated=append_negated, grid=grid, block=block)
+        self.negative_clauses = 0
+
+    def fit(self, X, Y, epochs=100, incremental=False):
+        X = X.reshape(X.shape[0], X.shape[1], 1)
+
+        self.number_of_outputs = Y.shape[1]
+        self.patch_dim = (X.shape[1], 1, 1)
+        self.max_y = np.max(Y, axis=1)
+        self.min_y = np.min(Y, axis=1)
+
+        encoded_Y = ((Y.transpose() - self.min_y))/(self.max_y - self.min_y)*T
+        encoded_Y = encoded_Y.transpose().astype(np.int32)
+
+        self._fit(X, encoded_Y, epochs = epochs, incremental = incremental)
+
+        return
+
+    def predict(self, X):
+        X = X.reshape(X.shape[0], X.shape[1], 1)
+        score = self._score(X)
+        pred = ((score)*(self.max_y - self.min_y)/(self.T) + self.min_y).transpose()
+        
+        return pred
