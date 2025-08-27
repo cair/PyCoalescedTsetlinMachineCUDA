@@ -50,6 +50,8 @@ for i in range(number_of_examples):
 	else:
 		Y_train[i] = 1
 
+	print(Y_train[i], X_train[i])
+
 	if np.random.rand() <= args.noise:
 		Y_train[i] = 1 - Y_train[i]
 
