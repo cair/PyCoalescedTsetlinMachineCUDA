@@ -19,7 +19,7 @@ def default_args(**kwargs):
 	parser.add_argument("--number-of-int-values", default=10, type=int)
 	parser.add_argument("--number-of-dummy-values", default=10, type=int)
 	parser.add_argument("--sequence-length", default=3, type=int)
-    parser.add_argument('--append-negated', dest='append_negated', default=True, action='store_true')
+	parser.add_argument('--append-negated', dest='append_negated', default=True, action='store_true')
 
 	args = parser.parse_args()
 	for key, value in kwargs.items():
