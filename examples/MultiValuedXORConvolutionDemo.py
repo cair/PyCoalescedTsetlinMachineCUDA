@@ -12,7 +12,7 @@ s = 1.0
 
 sequence_length = 2
 number_of_examples = 10000
-max_int_value = 4
+max_int_value = 8
 max_neutral_value = 0
 epochs = 100
 noise = 0.01
