@@ -65,6 +65,8 @@ for i in range(number_of_examples):
 	if np.random.rand() <= args.noise:
 		Y_train[i] = 1 - Y_train[i]
 
+X_train = 1 - X_train
+
 print(Y_train[0:10])
 print(X_train[0:10])
 
@@ -89,9 +91,11 @@ for i in range(number_of_examples):
 	else:
 		Y_test[i] = 1
 
+X_test = 1 - X_test
+
 print(X_train.shape)
 
-tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 2))
+tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 2), append_negated=False)
 for i in range(args.epochs):
 	start_training = time()
 	tm.fit(X_train, Y_train, epochs=1, incremental=True)
