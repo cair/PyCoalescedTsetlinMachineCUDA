@@ -14,8 +14,8 @@ sequence_length = 2
 number_of_examples = 10000
 max_int_value = 4
 max_neutral_value = 0
-epochs = 10
-noise = 0.1
+epochs = 100
+noise = 0.01
 
 X_train = np.zeros((number_of_examples, 1, sequence_length, max_int_value + max_neutral_value), dtype=np.uint32)
 Y_train = np.zeros(number_of_examples, dtype=np.uint32)
