@@ -31,7 +31,7 @@ for i in range(number_of_examples):
 		else:
 			X_train[i, 0, j, max_int_value + np.random.randint(max_neutral_value, dtype=np.uint32)] = 1
 
-	if ((x_1 % 2 == 0) and (x_2 % == 0)) or ((x_1 % 2 == 1) and (x_2 % == 1)):
+	if ((x_1 % 2 == 0) and (x_2 % 2 == 0)) or ((x_1 % 2 == 1) and (x_2 % 2 == 1)):
 		Y_train[i] = 0
 	else:
 		Y_train[i] = 1
