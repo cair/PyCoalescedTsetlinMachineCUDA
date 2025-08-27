@@ -10,10 +10,10 @@ clauses = 2
 T = 20
 s = 1.0
 
-sequence_length = 10
+sequence_length = 2
 number_of_examples = 10000
 max_int_value = 5
-max_neutral_value = 5
+max_neutral_value = 0
 epochs = 10
 
 X_train = np.zeros((number_of_examples, 1, sequence_length, max_int_value + max_neutral_value), dtype=np.uint32)
