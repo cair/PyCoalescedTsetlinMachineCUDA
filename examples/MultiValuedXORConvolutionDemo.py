@@ -39,7 +39,7 @@ for i in range(number_of_examples):
 		Y_train[i] = 1
 
 	if np.random.rand() <= noise:
-        Y_train[i] = 1 - Y_train[i]
+		Y_train[i] = 1 - Y_train[i]
 
 print(Y_train[0:10])
 print(X_train[0:10])
