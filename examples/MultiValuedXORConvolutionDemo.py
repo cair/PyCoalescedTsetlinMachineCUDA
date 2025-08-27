@@ -77,6 +77,8 @@ for i in range(number_of_examples):
 	else:
 		Y_test[i] = 1
 
+print(X_train.shape)
+
 tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 4))
 for i in range(args.epochs):
 	start_training = time()
