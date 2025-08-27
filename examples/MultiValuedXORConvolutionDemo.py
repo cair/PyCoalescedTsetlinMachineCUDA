@@ -19,7 +19,7 @@ def default_args(**kwargs):
 	parser.add_argument("--number-of-int-values", default=10, type=int)
 	parser.add_argument("--number-of-dummy-values", default=10, type=int)
 	parser.add_argument("--sequence-length", default=3, type=int)
-	parser.add_argument('--append-negated', dest='append_negated', default=True, action='store_true')
+	parser.add_argument('--append-negated', dest='append_negated', default=False, action='store_true')
 
 	args = parser.parse_args()
 	for key, value in kwargs.items():
@@ -29,7 +29,6 @@ def default_args(**kwargs):
 
 args = default_args()
 
-print("Append", args.append_negated)
 number_of_examples = 10000
 
 a = 1.1
@@ -114,6 +113,8 @@ for i in range(args.epochs):
 	Y_train_predicted = tm.predict(X_train)
 	result_train = 100*(Y_train_predicted == Y_train).mean()
 	f1_train = f1_score(Y_train, Y_train_predicted, average='macro')*100
+
+	print("Append", args.append_negated)
 
 	print("#%d F1 Test: %.2f%% F1 Train: %.2f%% Accuracy Test: %.2f%% Accuracy Train: %.2f%% Training: %.2fs Testing: %.2fs" % (i+1, f1_test, f1_train, result_test, result_train, stop_training-start_training, stop_testing-start_testing))
 
