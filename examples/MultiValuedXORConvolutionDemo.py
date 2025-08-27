@@ -101,16 +101,16 @@ for i in range(args.epochs):
 
 	print("#%d F1 Test: %.2f%% F1 Train: %.2f%% Accuracy Test: %.2f%% Accuracy Train: %.2f%% Training: %.2fs Testing: %.2fs" % (i+1, f1_test, f1_train, result_test, result_train, stop_training-start_training, stop_testing-start_testing))
 
-print(tm.number_of_features)
+number_of_position_features = (tm.dim[0] - tm.patch_dim[0]) + (tm.dim[1] - tm.patch_dim[1])
+print(tm.number_of_features, number_of_position_features)
 weights = tm.get_state()[1].reshape(2, -1)
 for i in range(tm.number_of_clauses):
 	print("Clause #%d W:(%d %d)" % (i, weights[0,i], weights[1,i]), end=' ')
 	l = []
-	for k in range(tm.number_of_features):
-		if tm.ta_action(i, k):
-			if k < tm.number_of_features//2:
-				l.append("x%d" % (k))
-			else:
-				l.append("(NOT x%d)" % (k - tm.number_of_features//2))
+	for k in range(number_of_position_features, tm.number_of_features//2):
+		l.append("x%d" % (k - number_of_position_features))
+
+	for k in range(tm.number_of_features//2 + number_of_position_features, tm.number_of_features):
+		l.append("(NOT x%d)" % (k - tm.number_of_features//2 - number_of_position_features))
 
 	print(" AND ".join(l))
