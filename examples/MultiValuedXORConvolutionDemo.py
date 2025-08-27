@@ -104,6 +104,6 @@ for i in range(tm.number_of_clauses):
 			if k < args.number_of_int_values*2:
 				l.append("x%d" % (k))
 			else:
-				l.append("¬x%d" % (k - args.number_of_int_values*2))
+				l.append("(NOT x%d)" % (k - args.number_of_int_values*2))
 
 	print(" AND ".join(l))
