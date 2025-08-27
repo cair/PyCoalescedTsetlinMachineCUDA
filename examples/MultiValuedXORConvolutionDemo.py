@@ -53,7 +53,7 @@ for i in range(number_of_examples):
 		elif j == pattern_position + 1:
 			X_train[i, 0, j, x_2] = 1
 		else:
-			X_train[i, 0, j, args.number_of_int_values + np.random.choice(common_features, p=p_common_feature, dtype=np.uint32)] = 1
+			X_train[i, 0, j, args.number_of_int_values + np.random.choice(common_features, p=p_common_feature)] = 1
 
 	if ((x_1 % 2 == 0) and (x_2 % 2 == 0)) or ((x_1 % 2 == 1) and (x_2 % 2 == 1)):
 		Y_train[i] = 0
