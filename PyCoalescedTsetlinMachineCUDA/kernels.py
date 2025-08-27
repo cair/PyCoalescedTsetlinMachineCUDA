@@ -403,7 +403,7 @@ code_encode = """
 							encoded_Xi[chunk_nr] |= (1 << chunk_pos);
 						}
 
-						// Encode y coordinate of patch into feature vector 
+/*						// Encode y coordinate of patch into feature vector 
 						for (int y_threshold = 0; y_threshold < dim_y - patch_dim_y; ++y_threshold) {
 							int patch_pos = class_features + y_threshold;
 
@@ -432,7 +432,8 @@ code_encode = """
 								int chunk_pos = (patch_pos + number_of_features) % 32;
 								encoded_Xi[chunk_nr] |= (1 << chunk_pos);
 							}
-						} 
+						}
+*/
 
 						// Encode patch content into feature vector
 						for (int p_y = 0; p_y < patch_dim_y; ++p_y) {
