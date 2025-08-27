@@ -6,7 +6,7 @@ from sklearn.metrics import f1_score
 
 from PyCoalescedTsetlinMachineCUDA.tm import MultiClassConvolutionalTsetlinMachine2D, MultiClassTsetlinMachine
 
-clauses = 2
+clauses = 4
 T = 20
 s = 1.0
 
