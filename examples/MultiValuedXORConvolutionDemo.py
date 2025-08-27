@@ -18,11 +18,11 @@ def default_args(**kwargs):
 	parser.add_argument("--number-of-examples", default=10000, type=int)
 	parser.add_argument("--max-included-literals", default=4, type=int)
 
-    args = parser.parse_args()
-    for key, value in kwargs.items():
-        if key in args.__dict__:
-            setattr(args, key, value)
-    return args
+	args = parser.parse_args()
+	for key, value in kwargs.items():
+		if key in args.__dict__:
+			setattr(args, key, value)
+	return args
 
 args = default_args()
 
