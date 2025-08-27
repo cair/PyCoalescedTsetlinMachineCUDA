@@ -3,19 +3,33 @@ import keras
 from keras.datasets import imdb
 from time import time
 from sklearn.metrics import f1_score
+import argparse
 
 from PyCoalescedTsetlinMachineCUDA.tm import MultiClassConvolutionalTsetlinMachine2D, MultiClassTsetlinMachine
 
-clauses = 4
-T = 20
-s = 1.0
+def default_args(**kwargs):
+	parser = argparse.ArgumentParser()
+	parser.add_argument("--epochs", default=10, type=int)
+	parser.add_argument("--number-of-clauses", default=10, type=int)
+	parser.add_argument("--T", default=100, type=int)
+	parser.add_argument("--s", default=1.0, type=float)
+	parser.add_argument("--number-of-state-bits", default=8, type=int)
+	parser.add_argument("--noise", default=0.01, type=float)
+	parser.add_argument("--number-of-examples", default=10000, type=int)
+	parser.add_argument("--max-included-literals", default=4, type=int)
+
+    args = parser.parse_args()
+    for key, value in kwargs.items():
+        if key in args.__dict__:
+            setattr(args, key, value)
+    return args
+
+args = default_args()
 
 sequence_length = 2
 number_of_examples = 10000
 max_int_value = 8
 max_neutral_value = 0
-epochs = 100
-noise = 0.01
 
 X_train = np.zeros((number_of_examples, 1, sequence_length, max_int_value + max_neutral_value), dtype=np.uint32)
 Y_train = np.zeros(number_of_examples, dtype=np.uint32)
@@ -38,7 +52,7 @@ for i in range(number_of_examples):
 	else:
 		Y_train[i] = 1
 
-	if np.random.rand() <= noise:
+	if np.random.rand() <= args.noise:
 		Y_train[i] = 1 - Y_train[i]
 
 print(Y_train[0:10])
@@ -65,8 +79,8 @@ for i in range(number_of_examples):
 	else:
 		Y_test[i] = 1
 
-tm = MultiClassConvolutionalTsetlinMachine2D(clauses, T, s, (1, 2))
-for i in range(epochs):
+tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 2))
+for i in range(args.epochs):
 	start_training = time()
 	tm.fit(X_train, Y_train, epochs=1, incremental=True)
 	stop_training = time()
