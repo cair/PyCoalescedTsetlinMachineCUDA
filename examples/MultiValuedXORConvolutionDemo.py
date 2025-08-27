@@ -79,7 +79,7 @@ for i in range(number_of_examples):
 
 print(X_train.shape)
 
-tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 4))
+tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 2))
 for i in range(args.epochs):
 	start_training = time()
 	tm.fit(X_train, Y_train, epochs=1, incremental=True)
