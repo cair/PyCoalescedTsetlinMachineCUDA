@@ -30,15 +30,15 @@ args = default_args()
 number_of_examples = 10000
 max_neutral_value = 0
 
-X_train = np.zeros((number_of_examples, 1, args.sequencue_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
+X_train = np.zeros((number_of_examples, 1, args.sequence_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
 Y_train = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
 	x_1 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 	x_2 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 
-	pattern_position = np.random.randint(args.sequencue_length-1, dtype=np.uint32)
+	pattern_position = np.random.randint(args.sequence_length-1, dtype=np.uint32)
 
-	for j in range(args.sequencue_length):
+	for j in range(args.sequence_length):
 		if j == pattern_position:
 			X_train[i, 0, j, x_1] = 1
 		elif j == pattern_position + 1:
@@ -57,15 +57,15 @@ for i in range(number_of_examples):
 print(Y_train[0:10])
 print(X_train[0:10])
 
-X_test = np.zeros((number_of_examples, 1, args.sequencue_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
+X_test = np.zeros((number_of_examples, 1, args.sequence_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
 Y_test = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
 	x_1 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 	x_2 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 
-	pattern_position = np.random.randint(args.sequencue_length-1, dtype=np.uint32)
+	pattern_position = np.random.randint(args.sequence_length-1, dtype=np.uint32)
 
-	for j in range(args.sequencue_length):
+	for j in range(args.sequence_length):
 		if j == pattern_position:
 			X_test[i, 0, j, x_1] = 1
 		elif j == pattern_position + 1:
