@@ -12,7 +12,7 @@ s = 1.0
 
 sequence_length = 2
 number_of_examples = 10000
-max_int_value = 5
+max_int_value = 2
 max_neutral_value = 0
 epochs = 10
 
@@ -37,6 +37,8 @@ for i in range(number_of_examples):
 	else:
 		Y_train[i] = 1
 
+print(Y_train[0:10])
+print(X_train[0:10])
 
 X_test = np.zeros((number_of_examples, 1, sequence_length, max_int_value + max_neutral_value), dtype=np.uint32)
 Y_test = np.zeros(number_of_examples, dtype=np.uint32)
