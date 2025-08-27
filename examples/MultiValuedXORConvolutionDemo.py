@@ -106,4 +106,4 @@ for i in range(tm.number_of_clauses):
 			else:
 				l.append("¬x%d" % (k - args.hypervector_size))
 
-		print(" AND ".join(l))
+	print(" AND ".join(l))
