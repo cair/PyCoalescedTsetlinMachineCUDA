@@ -108,9 +108,11 @@ for i in range(tm.number_of_clauses):
 	print("Clause #%d W:(%d %d)" % (i, weights[0,i], weights[1,i]), end=' ')
 	l = []
 	for k in range(number_of_position_features, tm.number_of_features//2):
-		l.append("x%d" % (k - number_of_position_features))
+		if tm.ta_action(i, k):
+			l.append("x%d" % (k - number_of_position_features))
 
 	for k in range(tm.number_of_features//2 + number_of_position_features, tm.number_of_features):
-		l.append("(NOT x%d)" % (k - tm.number_of_features//2 - number_of_position_features))
+		if tm.ta_action(i, k):
+			l.append("(NOT x%d)" % (k - tm.number_of_features//2 - number_of_position_features))
 
 	print(" AND ".join(l))
