@@ -16,7 +16,7 @@ def default_args(**kwargs):
 	parser.add_argument("--number-of-state-bits", default=8, type=int)
 	parser.add_argument("--noise", default=0.01, type=float)
 	parser.add_argument("--number-of-examples", default=10000, type=int)
-	parser.add_argument("--number_of_int_values", default=10, type=int)
+	parser.add_argument("--number-of-int-values", default=10, type=int)
 	parser.add_argument("--sequence-length", default=3, type=int)
 
 	args = parser.parse_args()
@@ -28,9 +28,8 @@ def default_args(**kwargs):
 args = default_args()
 
 number_of_examples = 10000
-max_neutral_value = 0
 
-X_train = np.zeros((number_of_examples, 1, args.sequence_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
+X_train = np.zeros((number_of_examples, 1, args.sequence_length, args.number_of_int_values*2), dtype=np.uint32)
 Y_train = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
 	x_1 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
@@ -44,7 +43,7 @@ for i in range(number_of_examples):
 		elif j == pattern_position + 1:
 			X_train[i, 0, j, x_2] = 1
 		else:
-			X_train[i, 0, j, args.number_of_int_values + np.random.randint(max_neutral_value, dtype=np.uint32)] = 1
+			X_train[i, 0, j, args.number_of_int_values + np.random.randint(args.number_of_int_values, dtype=np.uint32)] = 1
 
 	if ((x_1 % 2 == 0) and (x_2 % 2 == 0)) or ((x_1 % 2 == 1) and (x_2 % 2 == 1)):
 		Y_train[i] = 0
@@ -57,7 +56,7 @@ for i in range(number_of_examples):
 print(Y_train[0:10])
 print(X_train[0:10])
 
-X_test = np.zeros((number_of_examples, 1, args.sequence_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
+X_test = np.zeros((number_of_examples, 1, args.sequence_length, args.number_of_int_values*2), dtype=np.uint32)
 Y_test = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
 	x_1 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
@@ -71,7 +70,7 @@ for i in range(number_of_examples):
 		elif j == pattern_position + 1:
 			X_test[i, 0, j, x_2] = 1
 		else:
-			X_test[i, 0, j, args.number_of_int_values + np.random.randint(max_neutral_value, dtype=np.uint32)] = 1
+			X_test[i, 0, j, args.number_of_int_values + np.random.randint(args.number_of_int_values, dtype=np.uint32)] = 1
 
 	if ((x_1 % 2 == 0) and (x_2 % 2 == 0)) or ((x_1 % 2 == 1) and (x_2 % 2 == 1)):
 		Y_test[i] = 0
