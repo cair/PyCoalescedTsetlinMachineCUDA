@@ -30,6 +30,15 @@ args = default_args()
 
 number_of_examples = 10000
 
+a = 1.1
+b = 2.7
+
+common_features = np.arange(args.number_of_dummy_values, dtype=np.uint32)
+p_common_feature = np.empty(args.number_of_dummy_values)
+for k in range(args.number_of_dummy_values):
+	p_common_feature[k] = (k + b)**(-a)
+p_common_feature = p_common_feature / p_common_feature.sum()
+
 X_train = np.zeros((number_of_examples, 1, args.sequence_length, (args.number_of_int_values + args.number_of_dummy_values)), dtype=np.uint32)
 Y_train = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
@@ -44,7 +53,7 @@ for i in range(number_of_examples):
 		elif j == pattern_position + 1:
 			X_train[i, 0, j, x_2] = 1
 		else:
-			X_train[i, 0, j, args.number_of_int_values + np.random.randint(args.number_of_dummy_values, dtype=np.uint32)] = 1
+			X_train[i, 0, j, args.number_of_int_values + np.random.choice(common_features, p=p_common_feature, dtype=np.uint32)] = 1
 
 	if ((x_1 % 2 == 0) and (x_2 % 2 == 0)) or ((x_1 % 2 == 1) and (x_2 % 2 == 1)):
 		Y_train[i] = 0
