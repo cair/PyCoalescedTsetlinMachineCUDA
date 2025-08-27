@@ -77,11 +77,13 @@ for i in range(number_of_examples):
 	else:
 		Y_test[i] = 1
 
-tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 2))
+tm = MultiClassConvolutionalTsetlinMachine2D(args.number_of_clauses, args.T, args.s, (1, 4))
 for i in range(args.epochs):
 	start_training = time()
 	tm.fit(X_train, Y_train, epochs=1, incremental=True)
 	stop_training = time()
+
+	print(tm.number_of_patches)
 
 	start_testing = time()
 	Y_test_predicted =tm.predict(X_test)
