@@ -82,7 +82,7 @@ class CommonTsetlinMachine():
 		self.class_sum_gpu = cuda.mem_alloc(self.number_of_outputs*4)
 
 	def ta_action(self, clause, ta):
-		self.ta_state = np.empty(self.number_of_clauses*self.number_of_ta_chunks*self.number_of_state_bits).astype(np.uint32)
+		self.ta_state = np.empty(self.number_of_clauses*self.number_of_ta_chunks*self.number_of_state_bits, dtype=np.uint32)
 		cuda.memcpy_dtoh(self.ta_state, self.ta_state_gpu)
 		ta_state = self.ta_state.reshape((self.number_of_clauses, self.number_of_ta_chunks, self.number_of_state_bits))
 
