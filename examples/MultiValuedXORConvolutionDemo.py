@@ -101,7 +101,7 @@ for i in range(tm.number_of_clauses):
 	l = []
 	for k in range(args.number_of_int_values * 4):
 		if tm.ta_action(i, k):
-			if k < args.hypervector_size:
+			if k < args.number_of_int_values*2:
 				l.append("x%d" % (k))
 			else:
 				l.append("¬x%d" % (k - args.hypervector_size))
