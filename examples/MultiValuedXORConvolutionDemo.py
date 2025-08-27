@@ -107,12 +107,18 @@ weights = tm.get_state()[1].reshape(2, -1)
 for i in range(tm.number_of_clauses):
 	print("Clause #%d W:(%d %d)" % (i, weights[0,i], weights[1,i]), end=' ')
 	l = []
-	for k in range(number_of_position_features, tm.number_of_features//2):
+	for k in range(tm.number_of_features//2):
 		if tm.ta_action(i, k):
-			l.append("x%d" % (k - number_of_position_features))
+			if k < number_of_position_features:
+				l.append("p%d" % (k))
+			else:
+				l.append("x%d" % (k - number_of_position_features))
 
-	for k in range(tm.number_of_features//2 + number_of_position_features, tm.number_of_features):
+	for k in range(tm.number_of_features//2, tm.number_of_features):
 		if tm.ta_action(i, k):
-			l.append("(NOT x%d)" % (k - tm.number_of_features//2 - number_of_position_features))
+			if k < tm.number_of_features//2 + number_of_position_features:
+				l.append("(NOT p%d)" % (k - tm.number_of_features//2))
+			else:
+				l.append("(NOT x%d)" % (k - tm.number_of_features//2 - number_of_position_features))
 
 	print(" AND ".join(l))
