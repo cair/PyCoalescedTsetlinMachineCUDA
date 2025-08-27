@@ -105,11 +105,11 @@ weights = tm.get_state()[1].reshape(2, -1)
 for i in range(tm.number_of_clauses):
 	print("Clause #%d W:(%d %d)" % (i, weights[0,i], weights[1,i]), end=' ')
 	l = []
-	for k in range(args.number_of_int_values * 4):
+	for k in range(tm.number_of_literals):
 		if tm.ta_action(i, k):
-			if k < args.number_of_int_values*2:
+			if k < tm.number_of_features:
 				l.append("x%d" % (k))
 			else:
-				l.append("(NOT x%d)" % (k - args.number_of_int_values*2))
+				l.append("(NOT x%d)" % (k - tm.number_of_features))
 
 	print(" AND ".join(l))
