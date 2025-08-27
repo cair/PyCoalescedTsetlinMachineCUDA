@@ -17,6 +17,7 @@ def default_args(**kwargs):
 	parser.add_argument("--noise", default=0.01, type=float)
 	parser.add_argument("--number-of-examples", default=10000, type=int)
 	parser.add_argument("--number_of_int_values", default=10, type=int)
+	parser.add_argument("--sequence-length", default=3, type=int)
 
 	args = parser.parse_args()
 	for key, value in kwargs.items():
@@ -26,19 +27,18 @@ def default_args(**kwargs):
 
 args = default_args()
 
-sequence_length = 2
 number_of_examples = 10000
 max_neutral_value = 0
 
-X_train = np.zeros((number_of_examples, 1, sequence_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
+X_train = np.zeros((number_of_examples, 1, args.sequencue_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
 Y_train = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
 	x_1 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 	x_2 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 
-	pattern_position = np.random.randint(sequence_length-1, dtype=np.uint32)
+	pattern_position = np.random.randint(args.sequencue_length-1, dtype=np.uint32)
 
-	for j in range(sequence_length):
+	for j in range(args.sequencue_length):
 		if j == pattern_position:
 			X_train[i, 0, j, x_1] = 1
 		elif j == pattern_position + 1:
@@ -57,15 +57,15 @@ for i in range(number_of_examples):
 print(Y_train[0:10])
 print(X_train[0:10])
 
-X_test = np.zeros((number_of_examples, 1, sequence_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
+X_test = np.zeros((number_of_examples, 1, args.sequencue_length, args.number_of_int_values + max_neutral_value), dtype=np.uint32)
 Y_test = np.zeros(number_of_examples, dtype=np.uint32)
 for i in range(number_of_examples):
 	x_1 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 	x_2 = np.random.randint(args.number_of_int_values, dtype=np.uint32)
 
-	pattern_position = np.random.randint(sequence_length-1, dtype=np.uint32)
+	pattern_position = np.random.randint(args.sequencue_length-1, dtype=np.uint32)
 
-	for j in range(sequence_length):
+	for j in range(args.sequencue_length):
 		if j == pattern_position:
 			X_test[i, 0, j, x_1] = 1
 		elif j == pattern_position + 1:
